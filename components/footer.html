@@ -1,0 +1,25 @@
+<footer>
+
+    <div class="specs" style="text-align: center;">
+        <h3>Notify me when...</h3>
+            <div style="display: flex; gap: 8px; max-width: 400px; margin: 0 auto;">
+                <input type="email" id="newsletter-email" placeholder="your@email.com" style="flex: 1;">
+                    <button id="newsletter-btn">→</button>
+                </div>
+                <p class="text-muted" style="margin-top: 12px; font-size: 11px;">No spam. Only product updates.</p>
+            </div>
+
+            <script>
+                document.getElementById('newsletter-btn')?.addEventListener('click', () => {
+                    const email = document.getElementById('newsletter-email')?.value;
+                    if(email) {
+                        // In production: salva su Brevo/Mailchimp/Airtable/Google Sheet
+                        alert(`📧 ${email} saved. You'll hear from us.`);
+                    }
+                });
+            </script>
+    <div class="container">
+        <p>unit. — industrial design studio, open by philosophy</p>
+        <p>© 2026 — CC BY-NC 4.0 — Made in Milan, Italy</p>
+    </div>
+</footer>

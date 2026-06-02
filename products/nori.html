@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nori</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* Layout a 2 colonne per 3D + blueprint */
+        .preview-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            margin: 32px 0;
+        }
+
+        .preview-item {
+            background: #111111;
+            border: 1px solid #222;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Container che si adatta all'immagine (senza forzature) */
+        .preview-content {
+            flex: 1;
+            position: relative;
+            background: #0A0A0A;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 480px;
+        }
+
+        /* Visualizzatore 3D (occupa tutto il container) */
+        #sketchfab-container {
+            padding: 0 !important;
+        }
+        #sketchfab-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Immagine blueprint con proporzioni A4 (mantiene aspect ratio) */
+        .blueprint-image {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            background: #0A0A0A;
+            cursor: crosshair;
+        }
+
+        /* Lente di ingrandimento */
+        .zoom-lens {
+            position: absolute;
+            border: 2px solid #FFFFFF;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(1px);
+            pointer-events: none;
+            display: none;
+            z-index: 10;
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.3), 0 0 0 2px rgba(255,255,255,0.2);
+        }
+
+        /* Risultato zoom (lente) */
+        .zoom-result {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 350px;
+            height: 350px;
+            border: 1px solid #333;
+            background: #0A0A0A;
+            overflow: hidden;
+            display: none;
+            z-index: 100;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            border-radius: 16px;
+            pointer-events: none;
+        }
+
+        .zoom-result img {
+            position: absolute;
+            width: auto;
+            height: auto;
+        }
+
+        /* Lightbox (semplice) - si chiude cliccando ovunque */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+        }
+
+        .lightbox .close {
+            position: absolute;
+            top: 24px;
+            right: 32px;
+            color: white;
+            font-size: 32px;
+            cursor: pointer;
+            font-family: monospace;
+            transition: opacity 0.2s;
+            z-index: 1001;
+        }
+
+        .lightbox .close:hover {
+            opacity: 0.7;
+        }
+
+        .lightbox-content {
+            width: 90%;
+            height: 90%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .lightbox-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        /* Galleria (sotto, separata) */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 32px 0;
+        }
+
+        .gallery-item {
+            background: #111111;
+            border: 1px solid #222;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #0A0A0A;
+        }
+
+        .gallery-item:hover {
+            opacity: 0.8;
+        }
+
+        @media (max-width: 700px) {
+            .preview-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            
+            .zoom-result {
+                display: none !important;
+            }
+            .zoom-lens {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <section>
+                <div class="badge" id="product-badge">01 — kitchen ritual</div>
+                <h1 style="font-size: 48px; margin-bottom: 8px;" id="product-name">Nori</h1>
+                <p style="font-size: 18px; color: #888; margin-bottom: 32px;" id="product-tagline">precision onigiri press</p>
+                
+                <p id="product-description" style="margin: 24px 0; color: #BBB;"></p>
+                
+                <!-- Preview a 2 colonne: 3D + Blueprint -->
+                <div class="preview-grid">
+                    <!-- Colonna sinistra: visualizzatore 3D -->
+                    <div class="preview-item">
+                        <div class="preview-content" id="sketchfab-container" style="padding: 0;">
+                            <div style="text-align: center; padding: 40px;">
+                                <span class="text-muted">Loading 3D model...</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Colonna destra: Blueprint con zoom (proporzioni A4) -->
+                    <div class="preview-item">
+                        <div class="preview-content" id="blueprint-container">
+                            <img id="blueprint-image" class="blueprint-image" src="" alt="Nori technical blueprint">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Galleria immagini (altre foto) -->
+                <div class="gallery" id="product-gallery"></div>
+                
+                <!-- Specifiche tecniche -->
+                <div class="specs" id="product-specs">
+                    <h3 style="margin-top: 0;">Technical specifications</h3>
+                </div>
+                
+                <!-- Downloads -->
+                <div style="margin: 32px 0;" id="product-downloads"></div>
+                
+                <!-- Kit fisico -->
+                <div class="specs" style="background: #1A1A1A;" id="product-kit"></div>
+            </section>
+        </div>
+    </main>
+
+    <script src="/js/products-data.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+        // Carica i dati del prodotto Nori
+        const product = PRODUCTS.nori;
+        
+        // Testo base
+        document.getElementById('product-badge').textContent = product.badge;
+        document.getElementById('product-name').textContent = product.name;
+        document.getElementById('product-tagline').textContent = product.tagline;
+        document.getElementById('product-description').textContent = product.longDescription;
+        
+        // -------------------------------
+        // BLUEPRINT con zoom (proporzioni mantenute)
+        // -------------------------------
+        const blueprintImage = document.getElementById('blueprint-image');
+        if (product.gallery && product.gallery.length > 0) {
+            // Cerca un'immagine che contiene "blueprint" nel src
+            const blueprint = product.gallery.find(item => 
+                item.src.toLowerCase().includes('blueprint')
+            );
+            
+            let blueprintSrc = '';
+            let blueprintAlt = '';
+            
+            if (blueprint) {
+                blueprintSrc = blueprint.src;
+                blueprintAlt = blueprint.alt || 'Technical blueprint';
+            } else {
+                blueprintSrc = product.gallery[0].src;
+                blueprintAlt = product.gallery[0].alt || 'Product image';
+            }
+            
+            blueprintImage.src = blueprintSrc;
+            blueprintImage.alt = blueprintAlt;
+            
+            // Container per lo zoom (il genitore dell'immagine)
+            const container = document.getElementById('blueprint-container');
+            
+            // Crea lente e risultato (li appende al container)
+            const lens = document.createElement('div');
+            lens.className = 'zoom-lens';
+            const result = document.createElement('div');
+            result.className = 'zoom-result';
+            const resultImg = document.createElement('img');
+            resultImg.src = blueprintSrc;
+            result.appendChild(resultImg);
+            container.appendChild(lens);
+            container.appendChild(result);
+            
+            // Funzione zoom
+            function zoom(e) {
+                // Otteniamo le coordinate relative ALL'IMMAGINE, non al container
+                const imgRect = blueprintImage.getBoundingClientRect();
+                
+                // Calcola posizione del mouse rispetto all'immagine
+                let x = e.clientX - imgRect.left;
+                let y = e.clientY - imgRect.top;
+                
+                // Se il mouse è fuori dall'immagine (nei bordi neri), nascondi lo zoom
+                if (x < 0 || y < 0 || x > imgRect.width || y > imgRect.height) {
+                    hideZoom();
+                    return;
+                }
+                
+                lens.style.display = 'block';
+                result.style.display = 'block';
+                
+                // Limita la lente dentro l'immagine
+                const lensWidth = 100;
+                const lensHeight = 100;
+                x = Math.min(Math.max(x, lensWidth/2), imgRect.width - lensWidth/2);
+                y = Math.min(Math.max(y, lensHeight/2), imgRect.height - lensHeight/2);
+                
+                // Posiziona la lente (relativa al container)
+                const containerRect = container.getBoundingClientRect();
+                const lensLeft = (imgRect.left + x - lensWidth/2) - containerRect.left;
+                const lensTop = (imgRect.top + y - lensHeight/2) - containerRect.top;
+                lens.style.left = lensLeft + 'px';
+                lens.style.top = lensTop + 'px';
+                
+                // Calcola zoom
+                const zoomLevel = 0.5;
+                const imgWidth = blueprintImage.naturalWidth;
+                const imgHeight = blueprintImage.naturalHeight;
+                
+                // Percentuale rispetto all'immagine
+                const percentX = x / imgRect.width;
+                const percentY = y / imgRect.height;
+                
+                // Posiziona l'immagine nello zoom result
+                const resultWidth = result.clientWidth;
+                const resultHeight = result.clientHeight;
+                
+                resultImg.style.width = (imgWidth * zoomLevel) + 'px';
+                resultImg.style.height = (imgHeight * zoomLevel) + 'px';
+                resultImg.style.left = -(percentX * imgWidth * zoomLevel - resultWidth/2) + 'px';
+                resultImg.style.top = -(percentY * imgHeight * zoomLevel - resultHeight/2) + 'px';
+            }
+            
+            function hideZoom() {
+                lens.style.display = 'none';
+                result.style.display = 'none';
+            }
+            
+            // Eventi per lo zoom (sull'immagine, non sul container)
+            blueprintImage.addEventListener('mousemove', zoom);
+            blueprintImage.addEventListener('mouseleave', hideZoom);
+            
+            // Lightbox con chiusura ovunque (fuori, sulla X, o sull'immagine)
+            blueprintImage.addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                const lightbox = document.createElement('div');
+                lightbox.className = 'lightbox';
+                lightbox.innerHTML = `
+                    <div class="close">✕</div>
+                    <div class="lightbox-content">
+                        <img class="lightbox-image" src="${blueprintSrc}" alt="${blueprintAlt}">
+                    </div>
+                `;
+                document.body.appendChild(lightbox);
+                
+                // Funzione per chiudere il lightbox
+                function closeLightbox() {
+                    lightbox.remove();
+                }
+                
+                // Clicca sulla X → chiudi
+                const closeBtn = lightbox.querySelector('.close');
+                closeBtn.addEventListener('click', closeLightbox);
+                
+                // Clicca sullo sfondo (lightbox stesso) → chiudi
+                lightbox.addEventListener('click', (e) => {
+                    if (e.target === lightbox) {
+                        closeLightbox();
+                    }
+                });
+                
+                // Clicca sull'immagine → chiudi
+                const lightboxImg = lightbox.querySelector('.lightbox-image');
+                lightboxImg.addEventListener('click', closeLightbox);
+            });
+        }
+        
+        // -------------------------------
+        // GALLERY (tutte le immagini tranne la blueprint)
+        // -------------------------------
+        const gallery = document.getElementById('product-gallery');
+        if (product.gallery && product.gallery.length > 0) {
+            const galleryImages = product.gallery.filter(item => 
+                !item.src.toLowerCase().includes('blueprint')
+            );
+            
+            if (galleryImages.length > 0) {
+                galleryImages.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'gallery-item';
+                    div.innerHTML = `
+                        <img src="${item.src}" alt="${item.alt}">
+                        <div style="padding: 12px; font-size: 11px; color: #666; text-align: center;">${item.caption || item.alt}</div>
+                    `;
+                    div.addEventListener('click', () => {
+                        const lightbox = document.createElement('div');
+                        lightbox.className = 'lightbox';
+                        lightbox.innerHTML = `
+                            <div class="close">✕</div>
+                            <div class="lightbox-content">
+                                <img class="lightbox-image" src="${item.src}" alt="${item.alt}">
+                            </div>
+                        `;
+                        document.body.appendChild(lightbox);
+                        
+                        function closeLightbox() {
+                            lightbox.remove();
+                        }
+                        
+                        const closeBtn = lightbox.querySelector('.close');
+                        closeBtn.addEventListener('click', closeLightbox);
+                        
+                        lightbox.addEventListener('click', (e) => {
+                            if (e.target === lightbox) {
+                                closeLightbox();
+                            }
+                        });
+                        
+                        const lightboxImg = lightbox.querySelector('.lightbox-image');
+                        lightboxImg.addEventListener('click', closeLightbox);
+                    });
+                    gallery.appendChild(div);
+                });
+            } else {
+                gallery.innerHTML = '<div class="text-muted" style="padding: 32px; text-align: center;">Gallery images coming soon</div>';
+            }
+        } else {
+            gallery.innerHTML = '<div class="text-muted" style="padding: 32px; text-align: center;">Gallery images coming soon</div>';
+        }
+        
+        // -------------------------------
+        // SKETCHFAB 3D MODEL
+        // -------------------------------
+        const sketchfabContainer = document.getElementById('sketchfab-container');
+        if (product.sketchfabId) {
+            sketchfabContainer.innerHTML = `
+                <iframe 
+                    src="https://sketchfab.com/models/${product.sketchfabId}/embed?autostart=1"
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                    frameborder="0"
+                    allow="autoplay; fullscreen; xr-spatial-tracking"
+                    allowfullscreen>
+                </iframe>
+            `;
+        } else {
+            sketchfabContainer.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: center; height: 100%;">
+                    <span class="text-muted">⌘ 3D preview coming soon</span>
+                </div>
+            `;
+        }
+        
+        // -------------------------------
+        // SPECIFICHE TECNICHE
+        // -------------------------------
+        const specsDiv = document.getElementById('product-specs');
+        const specsTable = document.createElement('table');
+        for (const [key, value] of Object.entries(product.specs)) {
+            const row = specsTable.insertRow();
+            const cell1 = row.insertCell(0);
+            const cell2 = row.insertCell(1);
+            cell1.textContent = key;
+            cell2.textContent = value;
+        }
+        specsDiv.appendChild(specsTable);
+        
+        // -------------------------------
+        // DOWNLOADS
+        // -------------------------------
+        const downloadsDiv = document.getElementById('product-downloads');
+        downloadsDiv.innerHTML = `
+            <h3>Download files</h3>
+            <a href="${product.downloads.stl}" class="btn-sm" style="background:#222;">📥 Download STL (ZIP)</a>
+            <a href="${product.downloads.step}" class="btn-sm" style="background:#222;">📥 Download STEP (ZIP)</a>
+            <a href="${product.printProfile}" class="btn-sm" style="background:#222;">🖨️ Print profile (Bambu/Orca)</a>
+            <div class="badge" style="margin-top: 16px;">Digital license — ${product.priceDigital}€ (one time, eternal)</div>
+            <p class="text-muted" style="margin-top: 12px; font-size: 12px;">
+                After purchase: instant download. No account needed. No DRM.
+            </p>
+        `;
+        
+        // -------------------------------
+        // KIT FISICO
+        // -------------------------------
+        const kitDiv = document.getElementById('product-kit');
+        if (product.kitStatus === 'coming soon') {
+            kitDiv.innerHTML = `
+                <h3 style="margin-top: 0;">🖨️ Buy printed kit — ${product.priceKit}€</h3>
+                <p>Includes: PETG black print (0.12mm, annealed), TPU gasket pre-installed, assembled, QC tested, recycled cardboard box + insert, tracked shipping.</p>
+                <div class="badge" style="background:#2A2A2A;">Coming soon — notify me</div>
+                <div style="margin-top: 16px;">
+                    <input type="email" id="notify-email" placeholder="your@email.com" style="width: 260px; display: inline-block; margin-right: 8px;">
+                    <button id="notify-btn">Notify me</button>
+                </div>
+            `;
+            document.getElementById('notify-btn')?.addEventListener('click', () => {
+                const email = document.getElementById('notify-email')?.value;
+                if(email) alert(`📧 ${email} — you'll be notified when the ${product.name} kit is available.`);
+                else alert('Please enter an email address.');
+            });
+        } else {
+            kitDiv.innerHTML = `
+                <h3 style="margin-top: 0;">🖨️ Buy printed kit — ${product.priceKit}€</h3>
+                <p>Includes: PETG black print (0.12mm, annealed), TPU gasket pre-installed, assembled, QC tested, recycled cardboard box + insert, tracked shipping.</p>
+                <a href="#" class="btn">Add to cart →</a>
+            `;
+        }
+    </script>
+</body>
+</html>

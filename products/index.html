@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 32px;
+            margin: 48px 0;
+        }
+        
+        .product-teaser {
+            background: #111111;
+            border: 1px solid #222;
+            transition: border-color 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .product-teaser:hover {
+            border-color: #444;
+        }
+        
+        .product-teaser-image {
+            background: #0A0A0A;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #222;
+            overflow: hidden;
+        }
+        
+        .product-teaser-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .product-teaser-content {
+            padding: 24px;
+        }
+        
+        .product-teaser h3 {
+            margin: 0 0 8px 0;
+            font-size: 20px;
+        }
+        
+        .product-teaser .price {
+            font-size: 18px;
+            margin: 12px 0 0 0;
+        }
+        
+        .product-teaser .badge {
+            margin-bottom: 12px;
+        }
+        
+        .placeholder-image {
+            width: 60%;
+            height: auto;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <section>
+                <h2>Products</h2>
+                <p class="text-muted" style="margin-bottom: 32px;">Precision tools for everyday rituals. Download or buy the kit.</p>
+                
+                <div class="products-grid" id="products-grid">
+                    <!-- JS carica tutti i prodotti -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="/js/products-data.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+        // Converte l'oggetto PRODUCTS in un array
+        const productsArray = Object.entries(PRODUCTS).map(([id, data]) => ({
+            id: id,
+            ...data
+        }));
+        
+        const productsGrid = document.getElementById('products-grid');
+        
+        if (productsArray.length > 0) {
+            productsArray.forEach(product => {
+                // Trova l'immagine del blueprint (se esiste), altrimenti la prima della gallery
+                let productImageSrc = '';
+                if (product.gallery && product.gallery.length > 0) {
+                    const blueprint = product.gallery.find(item => 
+                        item.src.toLowerCase().includes('blueprint')
+                    );
+                    productImageSrc = blueprint ? blueprint.src : product.gallery[0].src;
+                }
+                
+                const teaser = document.createElement('a');
+                teaser.href = `/products/${product.id}.html`;
+                teaser.className = 'product-teaser';
+                
+                teaser.innerHTML = `
+                    <div class="product-teaser-image">
+                        ${productImageSrc ? `<img src="${productImageSrc}" alt="${product.name}">` : '<div class="placeholder-image">⌘</div>'}
+                    </div>
+                    <div class="product-teaser-content">
+                        <div class="badge">${product.badge || 'release'}</div>
+                        <h3>${product.name}</h3>
+                        <p class="text-muted" style="font-size: 13px; margin: 8px 0;">${product.tagline}</p>
+                        <div class="price">${product.priceDigital}€ <small>digital</small> / ${product.priceKit}€ <small>kit</small></div>
+                    </div>
+                `;
+                
+                productsGrid.appendChild(teaser);
+            });
+        } else {
+            productsGrid.innerHTML = '<p class="text-muted">No products released yet. Check back soon.</p>';
+        }
+    </script>
+</body>
+</html>

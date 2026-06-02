@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* Stili per la featured product card (più grande, più impattante) */
+        .featured-product {
+            background: #111111;
+            border: 1px solid #222;
+            margin: 48px 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            overflow: hidden;
+        }
+        
+        .featured-product-image {
+            background: #0A0A0A;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            border-right: 1px solid #222;
+            min-height: 400px;
+            overflow: hidden;
+        }
+
+        .featured-product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .featured-product-content {
+            padding: 32px 32px 32px 0;
+        }
+        
+        .featured-product-content .badge {
+            margin-bottom: 16px;
+        }
+        
+        .featured-product-content h2 {
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+        
+        .featured-product-tagline {
+            font-size: 16px;
+            color: #888;
+            margin-bottom: 24px;
+            font-family: monospace;
+        }
+        
+        .featured-product-description {
+            color: #BBB;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+        
+        .featured-specs {
+            background: #0A0A0A;
+            padding: 16px;
+            margin: 24px 0;
+            border-left: 2px solid #444;
+        }
+        
+        .featured-specs p {
+            font-size: 13px;
+            font-family: monospace;
+            margin: 8px 0;
+            color: #888;
+        }
+        
+        .featured-specs strong {
+            color: #E0E0E0;
+        }
+        
+        .price-large {
+            font-size: 28px;
+            font-weight: 500;
+            color: #FFFFFF;
+            margin: 24px 0 16px;
+        }
+        
+        .price-large small {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .btn-large {
+            display: inline-block;
+            background: #FFFFFF;
+            color: #0A0A0A;
+            padding: 14px 32px;
+            text-decoration: none;
+            font-size: 14px;
+            font-family: monospace;
+            font-weight: 500;
+            margin-right: 12px;
+            transition: opacity 0.2s;
+        }
+        
+        .btn-large-outline {
+            background: transparent;
+            border: 1px solid #333;
+            color: #E0E0E0;
+        }
+        
+        .btn-large:hover {
+            opacity: 0.85;
+        }
+        
+        @media (max-width: 700px) {
+            .featured-product {
+                grid-template-columns: 1fr;
+            }
+            .featured-product-image {
+                border-right: none;
+                border-bottom: 1px solid #222;
+                min-height: 300px;
+            }
+            .featured-product-content {
+                padding: 32px;
+            }
+            .featured-product-content h2 {
+                font-size: 28px;
+            }
+        }
+        
+        /* Grid per altri prodotti (più piccoli) */
+        .other-products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin: 32px 0 48px;
+        }
+        
+        .other-product-card {
+            background: #111111;
+            border: 1px solid #222;
+            text-decoration: none;
+            color: inherit;
+            transition: border-color 0.2s;
+        }
+        
+        .other-product-card:hover {
+            border-color: #444;
+        }
+        
+        .other-product-image {
+            background: #0A0A0A;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #222;
+            overflow: hidden;
+        }
+        
+        .other-product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .other-product-content {
+            padding: 20px;
+        }
+        
+        .other-product-content h3 {
+            margin: 0 0 8px 0;
+            font-size: 18px;
+        }
+        
+        .other-product-price {
+            font-size: 16px;
+            margin-top: 12px;
+            color: #E0E0E0;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <div class="hero">
+                <h1>unit.</h1>
+                <p>We design precision tools for everyday life.<br>Download the files, print them at home or just buy the assembled kit.</p>
+                <p class="text-muted" style="margin-bottom: 32px;">No planned obsolescence, no proprietary parts, no gatekeeping.</p>
+            </div>
+
+            <!-- FEATURED PRODUCT (ultimo aggiunto) - caricato da JS -->
+            <div id="featured-product-container"></div>
+
+            <!-- ALTRI PRODOTTI (tutti tranne l'ultimo) -->
+            <section id="other-products-section" style="display: none;">
+                <h2>All products</h2>
+                <div class="other-products-grid" id="other-products-grid"></div>
+                <a href="/products/index.html" class="btn-outline" style="display: inline-block; padding: 12px 28px;">View all →</a>
+            </section>
+
+            <section>
+                <h2>How it works</h2>
+                <div class="support-grid">
+                    <div class="support-card">
+                        <strong>1. Buy the file</strong>
+                        <p class="text-muted" style="margin-top: 8px;">5€ — eternal license, no DRM, no subscription.</p>
+                    </div>
+                    <div class="support-card">
+                        <strong>2. Print at home</strong>
+                        <p class="text-muted" style="margin-top: 8px;">STL + STEP + print profile included.</p>
+                    </div>
+                    <div class="support-card">
+                        <strong>3. Or buy the kit</strong>
+                        <p class="text-muted" style="margin-top: 8px;">Premium print, assembled, packaged, shipped.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="/js/products-data.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+        // Converte l'oggetto PRODUCTS in un array ordinato
+        const productsArray = Object.entries(PRODUCTS).map(([id, data]) => ({
+            id: id,
+            ...data
+        }));
+        
+        // L'ultimo prodotto è l'ultimo dell'array
+        const latestProduct = productsArray[productsArray.length - 1];
+        const otherProducts = productsArray.slice(0, -1);
+        
+        // Funzione per ottenere l'immagine del prodotto (priorità al blueprint)
+        function getProductImage(product) {
+            if (product.gallery && product.gallery.length > 0) {
+                const blueprint = product.gallery.find(item => 
+                    item.src.toLowerCase().includes('blueprint')
+                );
+                return blueprint ? blueprint.src : product.gallery[0].src;
+            }
+            return '';
+        }
+        
+        // -------------------------------
+        // FEATURED PRODUCT (con immagine blueprint)
+        // -------------------------------
+        const featuredContainer = document.getElementById('featured-product-container');
+        
+        if (latestProduct) {
+            const productImageSrc = getProductImage(latestProduct);
+            const specsEntries = Object.entries(latestProduct.specs).slice(0, 3);
+            
+            featuredContainer.innerHTML = `
+                <div class="featured-product">
+                    <div class="featured-product-image">
+                        ${productImageSrc ? `<img src="${productImageSrc}" alt="${latestProduct.name}">` : '<div class="text-muted" style="text-align: center;">⌘</div>'}
+                    </div>
+                    <div class="featured-product-content">
+                        <div class="badge">Latest release — ${latestProduct.badge || 'new'}</div>
+                        <h2>${latestProduct.name}</h2>
+                        <div class="featured-product-tagline">${latestProduct.tagline}</div>
+                        <p class="featured-product-description">${latestProduct.description || latestProduct.longDescription?.substring(0, 150) + '...'}</p>
+                        <div class="featured-specs">
+                            ${specsEntries.map(([key, value]) => `<p><strong>${key}:</strong> ${value}</p>`).join('')}
+                        </div>
+                        <div class="price-large">
+                            ${latestProduct.priceDigital}€ <small>digital</small> / ${latestProduct.priceKit}€ <small>kit</small>
+                        </div>
+                        <div>
+                            <a href="/products/${latestProduct.id}.html" class="btn-large">View details →</a>
+                            <a href="#" class="btn-large btn-large-outline">Download STL</a>
+                        </div>
+                        ${latestProduct.kitStatus === 'coming soon' ? '<p class="text-muted" style="margin-top: 16px; font-size: 12px;">Kit coming soon — notify me</p>' : ''}
+                    </div>
+                </div>
+            `;
+        } else {
+            featuredContainer.innerHTML = '<p class="text-muted">No products released yet. Check back soon.</p>';
+        }
+        
+        // -------------------------------
+        // ALTRI PRODOTTI (con immagine blueprint)
+        // -------------------------------
+        const otherSection = document.getElementById('other-products-section');
+        const otherGrid = document.getElementById('other-products-grid');
+        
+        if (otherProducts.length > 0) {
+            otherSection.style.display = 'block';
+            
+            otherProducts.forEach(product => {
+                const productImageSrc = getProductImage(product);
+                
+                const card = document.createElement('a');
+                card.href = `/products/${product.id}.html`;
+                card.className = 'other-product-card';
+                card.innerHTML = `
+                    <div class="other-product-image">
+                        ${productImageSrc ? `<img src="${productImageSrc}" alt="${product.name}">` : '<span class="text-muted">⌘</span>'}
+                    </div>
+                    <div class="other-product-content">
+                        <div class="badge" style="margin-bottom: 8px;">${product.badge || 'release'}</div>
+                        <h3>${product.name}</h3>
+                        <p class="text-muted" style="font-size: 12px; margin: 4px 0;">${product.tagline}</p>
+                        <div class="other-product-price">${product.priceDigital}€ / ${product.priceKit}€</div>
+                    </div>
+                `;
+                otherGrid.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>

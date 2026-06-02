@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page not found</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* Stili specifici per la 404 (mantengono lo stesso look & feel) */
+        .error-container {
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 80px 24px;
+        }
+        
+        .error-logo {
+            margin-bottom: 32px;
+        }
+        
+        .error-logo img {
+            height: 80px;
+            width: auto;
+            opacity: 1;
+        }
+        
+        .error-code {
+            font-size: 120px;
+            font-weight: 500;
+            color: #FFFFFF;
+            letter-spacing: -4px;
+            line-height: 1;
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 16px;
+        }
+        
+        .error-title {
+            font-size: 20px;
+            color: #888;
+            margin-bottom: 16px;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+        
+        .error-message {
+            color: #666;
+            margin-bottom: 32px;
+            max-width: 450px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .error-actions {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        @media (max-width: 700px) {
+            .error-code {
+                font-size: 80px;
+            }
+            .error-logo img {
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <div class="error-container">
+                <div class="error-logo">
+                    <img src="/assets/images/logo.png" alt="unit.">
+                </div>
+                <div class="error-code">404</div>
+                <div class="error-title">PAGE NOT FOUND</div>
+                <p class="error-message">You seem lost. But that's ok. Good design takes time to find.</p>
+                <div class="error-actions">
+                    <a href="/index.html" class="btn">← Back to home</a>
+                    <a href="/products/index.html" class="btn btn-outline">Browse products</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>
