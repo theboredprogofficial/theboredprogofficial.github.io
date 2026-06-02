@@ -272,7 +272,7 @@
                             ${latestProduct.priceDigital}€ <small>digital</small> / ${latestProduct.priceKit}€ <small>kit</small>
                         </div>
                         <div>
-                            <a href="/products/${latestProduct.id}.html" class="btn-large">View details →</a>
+                            <a href="/products/product.html?id=${latestProduct.id}" class="btn-large">View details →</a>
                             <a href="#" class="btn-large btn-large-outline">Download STL</a>
                         </div>
                         ${latestProduct.kitStatus === 'coming soon' ? '<p class="text-muted" style="margin-top: 16px; font-size: 12px;">Kit coming soon — notify me</p>' : ''}
@@ -296,7 +296,7 @@
                 const productImageSrc = getProductImage(product);
                 
                 const card = document.createElement('a');
-                card.href = `/products/${product.id}.html`;
+                card.href = `/products/product.html?id=${product.id}`;
                 card.className = 'other-product-card';
                 card.innerHTML = `
                     <div class="other-product-image">

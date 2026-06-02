@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Products</title>
+    <title>All products — unit.</title>
     <link rel="stylesheet" href="/css/style.css">
+    <meta name="description" content="All precision tools by unit. Download files or buy assembled kits.">
     <style>
+        /* Stili per la griglia prodotti (copiati da style.css + fix) */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -47,17 +49,17 @@
             padding: 24px;
         }
         
-        .product-teaser h3 {
+        .product-teaser-content h3 {
             margin: 0 0 8px 0;
             font-size: 20px;
         }
         
-        .product-teaser .price {
+        .product-teaser-content .price {
             font-size: 18px;
             margin: 12px 0 0 0;
         }
         
-        .product-teaser .badge {
+        .product-teaser-content .badge {
             margin-bottom: 12px;
         }
         
@@ -65,6 +67,8 @@
             width: 60%;
             height: auto;
             opacity: 0.3;
+            font-size: 48px;
+            text-align: center;
         }
     </style>
 </head>
@@ -72,11 +76,9 @@
     <main>
         <div class="container">
             <section>
-                <h2>Products</h2>
-                <p class="text-muted" style="margin-bottom: 32px;">Precision tools for everyday rituals. Download or buy the kit.</p>
-                
+                <h2>All products</h2>
                 <div class="products-grid" id="products-grid">
-                    <!-- JS carica tutti i prodotti -->
+                    <div class="text-muted">Loading...</div>
                 </div>
             </section>
         </div>
@@ -85,45 +87,37 @@
     <script src="/js/products-data.js"></script>
     <script src="/js/main.js"></script>
     <script>
-        // Converte l'oggetto PRODUCTS in un array
-        const productsArray = Object.entries(PRODUCTS).map(([id, data]) => ({
-            id: id,
-            ...data
-        }));
+        const productsArray = Object.entries(PRODUCTS).map(([id, data]) => ({ id, ...data }));
+        const grid = document.getElementById('products-grid');
         
-        const productsGrid = document.getElementById('products-grid');
+        function getProductImage(product) {
+            if (product.gallery && product.gallery.length > 0) {
+                const blueprint = product.gallery.find(item => item.src.toLowerCase().includes('blueprint'));
+                return blueprint ? blueprint.src : product.gallery[0].src;
+            }
+            return '';
+        }
         
         if (productsArray.length > 0) {
+            grid.innerHTML = '';
             productsArray.forEach(product => {
-                // Trova l'immagine del blueprint (se esiste), altrimenti la prima della gallery
-                let productImageSrc = '';
-                if (product.gallery && product.gallery.length > 0) {
-                    const blueprint = product.gallery.find(item => 
-                        item.src.toLowerCase().includes('blueprint')
-                    );
-                    productImageSrc = blueprint ? blueprint.src : product.gallery[0].src;
-                }
-                
-                const teaser = document.createElement('a');
-                teaser.href = `/products/${product.id}.html`;
-                teaser.className = 'product-teaser';
-                
-                teaser.innerHTML = `
-                    <div class="product-teaser-image">
-                        ${productImageSrc ? `<img src="${productImageSrc}" alt="${product.name}">` : '<div class="placeholder-image">⌘</div>'}
-                    </div>
-                    <div class="product-teaser-content">
-                        <div class="badge">${product.badge || 'release'}</div>
-                        <h3>${product.name}</h3>
-                        <p class="text-muted" style="font-size: 13px; margin: 8px 0;">${product.tagline}</p>
-                        <div class="price">${product.priceDigital}€ <small>digital</small> / ${product.priceKit}€ <small>kit</small></div>
-                    </div>
+                const imgSrc = getProductImage(product);
+                grid.innerHTML += `
+                    <a href="product.html?id=${product.id}" class="product-teaser">
+                        <div class="product-teaser-image">
+                            ${imgSrc ? `<img src="${imgSrc}" alt="${product.name}">` : '<div class="placeholder-image">⌘</div>'}
+                        </div>
+                        <div class="product-teaser-content">
+                            <div class="badge">${product.badge || 'release'}</div>
+                            <h3>${product.name}</h3>
+                            <p class="text-muted" style="font-size: 13px; margin: 8px 0;">${product.tagline}</p>
+                            <div class="price">${product.priceDigital}€ <small>digital</small> / ${product.priceKit}€ <small>kit</small></div>
+                        </div>
+                    </a>
                 `;
-                
-                productsGrid.appendChild(teaser);
             });
         } else {
-            productsGrid.innerHTML = '<p class="text-muted">No products released yet. Check back soon.</p>';
+            grid.innerHTML = '<p class="text-muted">No products yet.</p>';
         }
     </script>
 </body>
