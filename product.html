@@ -314,13 +314,17 @@
         // DOWNLOADS
         // -------------------------------
         const downloadsDiv = document.getElementById('product-downloads');
+
+        // Genera il link Gumroad basato sull'ID del prodotto
+        // Per Nori: https://unitdesignstudio.gumroad.com/l/nori
+        // Per altri prodotti: https://unitdesignstudio.gumroad.com/l/{productId}
+        const gumroadLink = `https://unitdesignstudio.gumroad.com/l/${productId}`;
+
         downloadsDiv.innerHTML = `
-            <h3>Download files</h3>
-            <a href="${product.downloads.stl}" class="btn-sm" style="background:#222;">📥 Download STL (ZIP)</a>
-            <a href="${product.downloads.step}" class="btn-sm" style="background:#222;">📥 Download STEP (ZIP)</a>
-            <a href="${product.printProfile}" class="btn-sm" style="background:#222;">🖨️ Print profile (Bambu/Orca)</a>
-            <div class="badge" style="margin-top: 16px;">Digital license — ${product.priceDigital}€ (one time, eternal)</div>
-            <p class="text-muted" style="margin-top: 12px; font-size: 12px;">After purchase: instant download. No account needed. No DRM.</p>
+            <h3>3D model</h3>
+            <a href="${gumroadLink}" target="_blank" class="btn" style="background:#FFFFFF; color:#0A0A0A;">Buy now — ${product.priceDigital}€ →</a>
+            <div class="badge" style="margin-top: 16px; display: inline-block; margin-left: 12px;">Instant download · No DRM</div>
+            <p class="text-muted" style="margin-top: 12px; font-size: 12px;">STL + STEP + print profile. Print at home or modify it.</p>
         `;
         
         // -------------------------------

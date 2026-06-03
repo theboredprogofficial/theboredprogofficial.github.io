@@ -6,21 +6,18 @@
     <title>All products — unit.</title>
     <link rel="stylesheet" href="/css/style.css">
     <meta name="description" content="All precision tools by unit. Download files or buy assembled kits.">
-    <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/x-icon" href="/assets/favicon/favicon.ico">
     <link rel="manifest" href="/assets/favicon/site.webmanifest">
     <style>
-        /* Stili per la griglia prodotti (copiati da style.css + fix) */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 32px;
             margin: 48px 0;
         }
-        
         .product-teaser {
             background: #111111;
             border: 1px solid #222;
@@ -29,11 +26,9 @@
             color: inherit;
             display: block;
         }
-        
         .product-teaser:hover {
             border-color: #444;
         }
-        
         .product-teaser-image {
             background: #0A0A0A;
             aspect-ratio: 1;
@@ -43,32 +38,26 @@
             border-bottom: 1px solid #222;
             overflow: hidden;
         }
-        
         .product-teaser-image img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
         }
-        
         .product-teaser-content {
             padding: 24px;
         }
-        
         .product-teaser-content h3 {
             margin: 0 0 8px 0;
             font-size: 20px;
         }
-        
         .product-teaser-content .price {
             font-size: 18px;
             margin: 12px 0 0 0;
         }
-        
         .product-teaser-content .badge {
             margin-bottom: 12px;
         }
-        
         .placeholder-image {
             width: 60%;
             height: auto;
@@ -108,8 +97,10 @@
             grid.innerHTML = '';
             productsArray.forEach(product => {
                 const imgSrc = getProductImage(product);
+                // LINK ASSOLUTO - parte dalla root
+                const productUrl = `/product.html?id=${product.id}`;
                 grid.innerHTML += `
-                    <a href="product.html?id=${product.id}" class="product-teaser">
+                    <a href="${productUrl}" class="product-teaser">
                         <div class="product-teaser-image">
                             ${imgSrc ? `<img src="${imgSrc}" alt="${product.name}">` : '<div class="placeholder-image">⌘</div>'}
                         </div>
