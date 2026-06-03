@@ -13,46 +13,29 @@
     <link rel="icon" type="image/x-icon" href="/assets/favicon/favicon.ico">
     <link rel="manifest" href="/assets/favicon/site.webmanifest">
     <style>
-        .preview-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 32px;
-            margin: 32px 0;
-        }
-
-        .preview-item {
+        .blueprint-wrapper {
             background: #111111;
             border: 1px solid #222;
-            overflow: hidden;
+            padding: 40px;
+            margin: 32px 0;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
-        .preview-content {
-            flex: 1;
-            position: relative;
+        .blueprint-container {
             background: #0A0A0A;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 480px;
-        }
-
-        #sketchfab-container {
-            position: relative !important;
-        }
-        
-        #sketchfab-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            position: relative;
         }
 
         .blueprint-image {
             max-width: 100%;
-            max-height: 100%;
+            max-height: 500px;
             width: auto;
             height: auto;
             object-fit: contain;
@@ -137,9 +120,11 @@
         }
 
         @media (max-width: 700px) {
-            .preview-grid {
-                grid-template-columns: 1fr;
-                gap: 24px;
+            .blueprint-wrapper {
+                padding: 20px;
+            }
+            .blueprint-image {
+                max-height: 300px;
             }
             .zoom-result {
                 display: none !important;
@@ -160,22 +145,12 @@
                 
                 <p id="product-description" style="margin: 24px 0; color: #BBB;"></p>
                 
-                <div class="preview-grid">
-                    <div class="preview-item">
-                        <div class="preview-content" id="sketchfab-container" style="position: relative;">
-                            <div style="text-align: center; padding: 40px;">
-                                <span class="text-muted">Loading 3D model...</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="preview-item">
-                        <div class="preview-content" id="blueprint-container">
-                            <img id="blueprint-image" class="blueprint-image" src="" alt="">
-                        </div>
+                <div class="blueprint-wrapper">
+                    <div class="blueprint-container" id="blueprint-container">
+                        <img id="blueprint-image" class="blueprint-image" src="" alt="">
                     </div>
                 </div>
-
+                
                 <div class="specs" id="product-specs">
                     <h3 style="margin-top: 0;">Technical specifications</h3>
                 </div>
@@ -195,17 +170,14 @@
         const productId = urlParams.get('id');
         
         if (!productId || !PRODUCTS[productId]) {
-            // Prodotto non trovato → redirect alla pagina prodotti
             window.location.href = '/products/index.html';
         }
         
         const product = PRODUCTS[productId];
         
-        // Aggiorna title e meta description
         document.title = `${product.name} — unit.`;
         document.getElementById('meta-description').setAttribute('content', product.description || product.tagline);
         
-        // Popola i campi base
         document.getElementById('product-badge').textContent = product.badge;
         document.getElementById('product-name').textContent = product.name;
         document.getElementById('product-tagline').textContent = product.tagline;
@@ -216,7 +188,6 @@
         // -------------------------------
         const blueprintImage = document.getElementById('blueprint-image');
         
-        // Trova l'immagine del blueprint (se esiste)
         let blueprintSrc = '';
         
         if (product.gallery && product.gallery.length > 0) {
@@ -230,7 +201,6 @@
             blueprintImage.src = blueprintSrc;
             blueprintImage.alt = product.name;
             
-            // Setup zoom
             const container = document.getElementById('blueprint-container');
             const lens = document.createElement('div');
             lens.className = 'zoom-lens';
@@ -260,7 +230,7 @@
                 const containerRect = container.getBoundingClientRect();
                 lens.style.left = (imgRect.left + x - lensWidth/2 - containerRect.left) + 'px';
                 lens.style.top = (imgRect.top + y - lensHeight/2 - containerRect.top) + 'px';
-                const zoomLevel = 0.5;
+                const zoomLevel = 0.7;
                 const percentX = x / imgRect.width;
                 const percentY = y / imgRect.height;
                 resultImg.style.width = (blueprintImage.naturalWidth * zoomLevel) + 'px';
@@ -275,7 +245,6 @@
                 result.style.display = 'none';
             });
             
-            // Lightbox sul click
             blueprintImage.addEventListener('click', () => {
                 const lightbox = document.createElement('div');
                 lightbox.className = 'lightbox';
@@ -286,16 +255,6 @@
                 lightbox.addEventListener('click', (e) => { if (e.target === lightbox) close(); });
                 lightbox.querySelector('.lightbox-image').addEventListener('click', close);
             });
-        }
-        
-        // -------------------------------
-        // SKETCHFAB 3D
-        // -------------------------------
-        const sketchfabContainer = document.getElementById('sketchfab-container');
-        if (product.sketchfabId) {
-            sketchfabContainer.innerHTML = `<iframe src="https://sketchfab.com/models/${product.sketchfabId}/embed?autostart=1" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" frameborder="0" allow="autoplay; fullscreen; xr-spatial-tracking" allowfullscreen></iframe>`;
-        } else {
-            sketchfabContainer.innerHTML = `<div style="display: flex; align-items: center; justify-content: center; height: 100%;"><span class="text-muted">⌘ 3D preview coming soon</span></div>`;
         }
         
         // -------------------------------
@@ -314,10 +273,6 @@
         // DOWNLOADS
         // -------------------------------
         const downloadsDiv = document.getElementById('product-downloads');
-
-        // Genera il link Gumroad basato sull'ID del prodotto
-        // Per Nori: https://unitdesignstudio.gumroad.com/l/nori
-        // Per altri prodotti: https://unitdesignstudio.gumroad.com/l/{productId}
         const gumroadLink = `https://unitdesignstudio.gumroad.com/l/${productId}`;
 
         downloadsDiv.innerHTML = `
