@@ -3,28 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About</title>
+    <title>About — unit.</title>
     <link rel="stylesheet" href="/css/style.css">
+    <meta name="description" content="unit. — a one-person design studio. Precision tools, 3D models, and kits.">
+    <style>
+        .manifesto-quote {
+            font-size: 24px;
+            line-height: 1.4;
+            color: #FFFFFF;
+            font-family: monospace;
+            border-left: 2px solid #444;
+            padding-left: 24px;
+            margin: 32px 0;
+        }
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin: 32px 0;
+        }
+        .value-card {
+            background: #111111;
+            border: 1px solid #222;
+            padding: 24px;
+        }
+        .value-card h3 {
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        .value-card p {
+            font-size: 13px;
+            color: #888;
+            line-height: 1.5;
+        }
+        .pricing-note {
+            background: #0A0A0A;
+            border-left: 2px solid #4CAF50;
+            padding: 20px;
+            margin: 32px 0;
+        }
+        .pricing-note h4 {
+            margin-bottom: 12px;
+            color: #4CAF50;
+        }
+        .pricing-note ul {
+            margin-left: 20px;
+            color: #BBB;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .pricing-note li {
+            margin-bottom: 6px;
+        }
+        .signature {
+            font-family: monospace;
+            color: #666;
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid #222;
+        }
+    </style>
 </head>
 <body>
     <main>
         <div class="container">
             <section>
-                <h2>hi.</h2>
+                <div class="manifesto-quote">
+                    I make things I need.<br>
+                    Not because there's a market gap.<br>
+                    Because the things that exist aren't good enough.
+                </div>
                 
-                <p style="font-size: 18px; color: #BBB; max-width: 700px; margin-bottom: 32px;">I'm a designer.</p>
+                <p style="font-size: 16px; color: #BBB; max-width: 700px; margin-bottom: 32px;">
+                    unit is a design studio created by me in my free time.<br>
+                    Everything from modeling, printing, kits, website, software — is done by one person - me.
+                </p>
                 
-                <p>I make things I need. <br>Not because there's a market gap. <br>Because the things that exist aren't good enough.<br>this is not a company in the traditional sense. <br>There's no CEO.<br>No board. <br>No investors. <br>There's a guy with CAD, a 3D printer, and an obsession with tolerances.</p>
-                    
-                <p>I release files, you print them. <br> Want the real thing? — my print, my assembly, my packaging — buy the kit.</p>
+                <div class="values-grid">
+                    <div class="value-card">
+                        <h3>📦 Pay once, use forever</h3>
+                        <p>Buy the 3D model once. Download it and <strong>own it.</strong></p>
+                    </div>
+                    <div class="value-card">
+                        <h3>🖨️ Print or buy</h3>
+                        <p>Print at home with your own 3d printer, or buy a ready-to-use kit.</p>
+                    </div>
+                    <div class="value-card">
+                        <h3>⚡ Built to last</h3>
+                        <p>If something breaks, simply print a replacement.</p>
+                    </div>
+                    <div class="value-card">
+                        <h3>🌍 Shared transparently</h3>
+                        <p>I share blueprints, design process, and final products. You'll see how it's made.</p>
+                    </div>
+                </div>
                 
-                <h3>Why open source?</h3>
-                <p>Because I've had too many tools die from a broken plastic clip. <br>Because I want you to fix your own shit. <br>Because if I get hit by a bus tomorrow, the support doesn't cease to exist.</p>
+                <div class="pricing-note">
+                    <h4>My work isn't free</h4>
+                    <p>It takes time, prototyping, materials, and coffee, especially since i have a separate day job.<br>Here's how you can support it:</p>
+                    <ul style="margin-top: 12px;">
+                        <li>Buy a 3D model (5€) — instant download, prints right at home</li>
+                        <li>Buy a kit (20-65€) — assembled, tested, and shipped right to you.</li>
+                        <li>Donate any amount — supports future projects</li>
+                    </ul>
+                    <p class="text-muted" style="margin-top: 16px;">
+                        Everything here isn't open source. I designed it, I made it, and I share it for a fair price.<br>Don't steal please.
+                    </p>
+                </div>
+                
+                <h3>Why not open source?</h3>
+                <p>Because my time has value.<br>Because prototyping costs money.<br> Because if you want the files, you can buy them for 5€ — less than a coffee in some cities. <br>I share the blueprints and design process transparently, but the finished product is how I fund the next project.</p>
                 
                 <h3>What's next?</h3>
-                <p>Whatever I need next. A stand for my laptop, a speaker enclosure, a coffee tool; I don't plan, I just make.</p>
-                
-                <hr>
+                <p>Whatever I need. <br>A stand for my laptop, a speaker enclosure, a coffee tool. I don't plan, I just make. Follow along or feel free to suggest something — I'm always listening.</p>
             </section>
         </div>
     </main>

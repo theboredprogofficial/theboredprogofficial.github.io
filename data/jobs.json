@@ -1,0 +1,23 @@
+{
+    "jobs": [
+        {
+            "id": "early-collaborator",
+            "title": "Early Collaborator",
+            "type": "Volunteer",
+            "location": "Remote",
+            "description": "unit is in its earliest stages. I can't pay (yet), but if you believe in open source hardware and want to help shape the direction, let's talk.",
+            "responsibilities": [
+                "Whatever you're good at — CAD, writing, testing, community, design",
+                "Help where help is needed",
+                "No pressure, no deadlines"
+            ],
+            "requirements": [
+                "Passion for open source",
+                "A skill you're willing to contribute",
+                "Patience (I'm one person doing this)"
+            ],
+            "payment": "Unpaid. But you'll get credit, free files, early access, and my eternal gratitude.",
+            "howToApply": "Send a short email introducing yourself and what you'd like to help with."
+        }
+    ]
+}
