@@ -165,7 +165,6 @@
     <script src="/js/products-data.js"></script>
     <script src="/js/main.js"></script>
     <script>
-        // Legge l'ID del prodotto dall'URL (es. ?id=nori)
         const urlParams = new URLSearchParams(window.location.search);
         const productId = urlParams.get('id');
         
@@ -270,7 +269,7 @@
         specsDiv.appendChild(specsTable);
         
         // -------------------------------
-        // DOWNLOADS
+        // DOWNLOADS (solo Gumroad)
         // -------------------------------
         const downloadsDiv = document.getElementById('product-downloads');
         const gumroadLink = `https://unitdesignstudio.gumroad.com/l/${productId}`;
@@ -279,7 +278,7 @@
             <h3>3D model</h3>
             <a href="${gumroadLink}" target="_blank" class="btn" style="background:#FFFFFF; color:#0A0A0A;">Buy now — ${product.priceDigital}€ →</a>
             <div class="badge" style="margin-top: 16px; display: inline-block; margin-left: 12px;">Instant download · No DRM</div>
-            <p class="text-muted" style="margin-top: 12px; font-size: 12px;">STL + STEP + print profile. Print at home or modify it.</p>
+            <p class="text-muted" style="margin-top: 12px; font-size: 12px;">STL + STEP + print profile. Print at home.</p>
         `;
         
         // -------------------------------

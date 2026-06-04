@@ -10,41 +10,19 @@ const PRODUCTS = {
         priceKit: 20,
         kitStatus: 'coming soon',
         
-        sketchfabId: '706ca391f32846ab9c18a3051bafc74f',
-        
         specs: {
-            'System': 'closed-loop compression',
-            'Seal': 'Tpu gasket, 70 Shore A',
-            'Venting': '3 radial channels, ∅2 mm, 120° offset',
-            'Stroke': '12 mm, mechanical end-stop',
-            'DIY materials': 'PETG, ABS, PLA',
-            'Optimal layer height': '0.16–0.20 mm',
-            'Supports': 'not needed'
+            'Seal': 'gasket (TPU is reccomended)',
+            'Food safety note': 'Use food-safe filament (PETG, PLA, or ABS recommended). Do not wash in dishwasher.',
+            'Venting': '8 radial channels, ∅3 mm, 30° offset',
+            'Optimal layer height': '0.16–0.20 mm'
         },
         
         gallery: [
             {
                 src: '/assets/images/nori/nori-blueprint.jpg',
                 alt: 'Nori technical blueprint',
-                caption: 'Exploded view — compression system'
-            },
-            {
-                src: '/assets/images/nori/nori-assembled.jpg',
-                alt: 'Nori assembled',
-                caption: 'Final assembly with TPU gasket'
-            },
-            {
-                src: '/assets/images/nori/nori-action.jpg',
-                alt: 'Nori in use',
-                caption: 'Making onigiri — 12mm compression stroke'
+                caption: ''
             }
-        ],
-        
-        downloads: {
-            stl: '#',
-            step: '#',
-        },
-        
-        printProfile: '#',
+        ]
     }
 };
