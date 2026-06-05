@@ -13,6 +13,87 @@
     <link rel="icon" type="image/x-icon" href="/assets/favicon/favicon.ico">
     <link rel="manifest" href="/assets/favicon/site.webmanifest">
     <style>
+        /* Gallery styles */
+        .gallery-container {
+            background: #111111;
+            border: 1px solid #222;
+            margin: 32px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery-main {
+            position: relative;
+            background: #0A0A0A;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 500px;
+        }
+
+        .gallery-image {
+            max-width: 100%;
+            max-height: 500px;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            cursor: pointer;
+        }
+
+        .gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: 1px solid #333;
+            font-size: 32px;
+            padding: 8px 16px;
+            cursor: pointer;
+            z-index: 10;
+            transition: background 0.2s;
+            font-family: monospace;
+        }
+
+        .gallery-nav:hover {
+            background: rgba(0,0,0,0.9);
+            border-color: #666;
+        }
+
+        .gallery-prev {
+            left: 16px;
+        }
+
+        .gallery-next {
+            right: 16px;
+        }
+
+        .gallery-dots {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            padding: 16px;
+            background: #0A0A0A;
+            border-top: 1px solid #222;
+        }
+
+        .gallery-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #444;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .gallery-dot.active {
+            background: #FFFFFF;
+        }
+
+        .gallery-dot:hover {
+            background: #888;
+        }
+
         .blueprint-wrapper {
             background: #111111;
             border: 1px solid #222;
@@ -30,7 +111,6 @@
             justify-content: center;
             max-width: 100%;
             margin: 0 auto;
-            position: relative;
         }
 
         .blueprint-image {
@@ -41,42 +121,7 @@
             object-fit: contain;
             display: block;
             background: #0A0A0A;
-            cursor: crosshair;
-        }
-
-        .zoom-lens {
-            position: absolute;
-            border: 2px solid #FFFFFF;
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(1px);
-            pointer-events: none;
-            display: none;
-            z-index: 10;
-        }
-
-        .zoom-result {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            width: 350px;
-            height: 350px;
-            border: 1px solid #333;
-            background: #0A0A0A;
-            overflow: hidden;
-            display: none;
-            z-index: 100;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-            border-radius: 16px;
-            pointer-events: none;
-        }
-
-        .zoom-result img {
-            position: absolute;
-            width: auto;
-            height: auto;
+            cursor: pointer;
         }
 
         .lightbox {
@@ -119,6 +164,81 @@
             cursor: pointer;
         }
 
+        /* Print instructions styles */
+        .print-section {
+            background: #111111;
+            border: 1px solid #222;
+            padding: 32px;
+            margin: 32px 0;
+        }
+        .print-section h3 {
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 20px;
+        }
+        .print-section h4 {
+            color: #888;
+            font-size: 13px;
+            letter-spacing: 1px;
+            margin: 24px 0 12px 0;
+            text-transform: uppercase;
+        }
+        .print-section h4:first-of-type {
+            margin-top: 0;
+        }
+        .print-section ul {
+            margin-left: 20px;
+            color: #BBB;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .print-section li {
+            margin-bottom: 4px;
+        }
+        .print-section code {
+            font-family: monospace;
+            background: #0A0A0A;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        .material-table, .settings-table, .perpart-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        .material-table th, .settings-table th, .perpart-table th {
+            text-align: left;
+            padding: 8px 8px 8px 0;
+            color: #888;
+            font-weight: normal;
+            border-bottom: 1px solid #222;
+        }
+        .material-table td, .settings-table td, .perpart-table td {
+            padding: 8px 8px 8px 0;
+            border-bottom: 1px solid #222;
+            color: #E0E0E0;
+        }
+        .material-table td:first-child, .settings-table td:first-child, .perpart-table td:first-child {
+            font-family: monospace;
+            color: #E0E0E0;
+        }
+        .important-note {
+            background: #1A1A1A;
+            border-left: 3px solid #FFA500;
+            padding: 12px 16px;
+            margin: 16px 0;
+            font-size: 13px;
+            color: #BBB;
+        }
+        .disclaimer-box {
+            background: #0A0A0A;
+            border: 1px solid #333;
+            padding: 16px;
+            margin-top: 24px;
+            font-size: 12px;
+            color: #888;
+        }
         @media (max-width: 700px) {
             .blueprint-wrapper {
                 padding: 20px;
@@ -126,11 +246,18 @@
             .blueprint-image {
                 max-height: 300px;
             }
-            .zoom-result {
-                display: none !important;
+            .material-table, .settings-table, .perpart-table {
+                font-size: 11px;
             }
-            .zoom-lens {
-                display: none !important;
+            .gallery-main {
+                min-height: 300px;
+            }
+            .gallery-image {
+                max-height: 300px;
+            }
+            .gallery-nav {
+                font-size: 24px;
+                padding: 4px 12px;
             }
         }
     </style>
@@ -145,14 +272,70 @@
                 
                 <p id="product-description" style="margin: 24px 0; color: #BBB;"></p>
                 
-                <div class="blueprint-wrapper">
-                    <div class="blueprint-container" id="blueprint-container">
-                        <img id="blueprint-image" class="blueprint-image" src="" alt="">
+                <!-- Gallery Section -->
+                <div id="gallery-container" class="gallery-container" style="display: none;">
+                    <div class="gallery-main">
+                        <div class="gallery-nav gallery-prev" id="gallery-prev">‹</div>
+                        <img id="gallery-image" class="gallery-image" src="" alt="">
+                        <div class="gallery-nav gallery-next" id="gallery-next">›</div>
                     </div>
+                    <div id="gallery-dots" class="gallery-dots"></div>
                 </div>
                 
                 <div class="specs" id="product-specs">
                     <h3 style="margin-top: 0;">Technical specifications</h3>
+                </div>
+                
+                <!-- Print Instructions Section (dinamico) -->
+                <div id="print-instructions" class="print-section" style="display: none;">
+                    <h3 id="print-title">How to print:</h3>
+                    
+                    <div id="print-files-section" style="display: none;">
+                        <h4>What's included in the download:</h4>
+                        <ul id="files-list"></ul>
+                    </div><br>
+                    
+                    <div id="print-materials-section" style="display: none;">
+                        <h4>Recommended materials</h4>
+                        <table class="material-table" id="materials-table">
+                            <thead><tr><th>Part</th><th>Material</th><th>Color</th><th>Notes</th></tr></thead>
+                            <tbody id="materials-body"></tbody>
+                        </table>
+                    </div>
+                    
+                    <div id="print-important-section" style="display: none;">
+                        <div class="important-note" id="important-note"></div>
+                    </div>
+                    
+                    <div id="print-settings-section" style="display: none;">
+                        <h4>Print settings</h4>
+                        <table class="settings-table" id="settings-table">
+                            <thead><tr><th>Setting</th><th>Recommended value</th></tr></thead>
+                            <tbody id="settings-body"></tbody>
+                        </table>
+                    </div><br>
+                    
+                    <div id="print-perpart-section" style="display: none;">
+                        <h4>Per-part settings</h4>
+                        <table class="perpart-table" id="perpart-table">
+                            <thead><tr><th>Part</th><th>Special notes</th></tr></thead>
+                            <tbody id="perpart-body"></tbody>
+                        <tr>
+                    </div><br>
+                    
+                    <div id="print-postprocessing-section" style="display: none;">
+                        <h4>Post-printing instructions</h4>
+                        <ul id="postprocessing-list"></ul>
+                    </div><br>
+                    
+                    <div id="print-cleaning-section" style="display: none;">
+                        <h4>Cleaning & care</h4>
+                        <ul id="cleaning-list"></ul>
+                    </div>
+                    
+                    <div id="print-disclaimer-section" style="display: none;">
+                        <div class="disclaimer-box" id="disclaimer"></div>
+                    </div>
                 </div>
                 
                 <div style="margin: 32px 0;" id="product-downloads"></div>
@@ -183,78 +366,181 @@
         document.getElementById('product-description').textContent = product.longDescription || product.description;
         
         // -------------------------------
-        // BLUEPRINT + ZOOM
+        // GALLERIA AUTOMATICA
         // -------------------------------
-        const blueprintImage = document.getElementById('blueprint-image');
-        
-        let blueprintSrc = '';
-        
-        if (product.gallery && product.gallery.length > 0) {
-            const blueprint = product.gallery.find(item => item.src.toLowerCase().includes('blueprint'));
-            if (blueprint) {
-                blueprintSrc = blueprint.src;
-            } else {
-                blueprintSrc = product.gallery[0].src;
-            }
+        async function loadGalleryImages(productId) {
+            const galleryContainer = document.getElementById('gallery-container');
+            const images = [];
             
-            blueprintImage.src = blueprintSrc;
-            blueprintImage.alt = product.name;
-            
-            const container = document.getElementById('blueprint-container');
-            const lens = document.createElement('div');
-            lens.className = 'zoom-lens';
-            const result = document.createElement('div');
-            result.className = 'zoom-result';
-            const resultImg = document.createElement('img');
-            resultImg.src = blueprintSrc;
-            result.appendChild(resultImg);
-            container.appendChild(lens);
-            container.appendChild(result);
-            
-            function zoom(e) {
-                const imgRect = blueprintImage.getBoundingClientRect();
-                let x = e.clientX - imgRect.left;
-                let y = e.clientY - imgRect.top;
-                if (x < 0 || y < 0 || x > imgRect.width || y > imgRect.height) {
-                    lens.style.display = 'none';
-                    result.style.display = 'none';
-                    return;
+            // Se il prodotto ha già una gallery nel JSON, usiamo quella
+            if (product.gallery && product.gallery.length > 0) {
+                for (const img of product.gallery) {
+                    images.push(img.src);
                 }
-                lens.style.display = 'block';
-                result.style.display = 'block';
-                const lensWidth = 100;
-                const lensHeight = 100;
-                x = Math.min(Math.max(x, lensWidth/2), imgRect.width - lensWidth/2);
-                y = Math.min(Math.max(y, lensHeight/2), imgRect.height - lensHeight/2);
-                const containerRect = container.getBoundingClientRect();
-                lens.style.left = (imgRect.left + x - lensWidth/2 - containerRect.left) + 'px';
-                lens.style.top = (imgRect.top + y - lensHeight/2 - containerRect.top) + 'px';
-                const zoomLevel = 0.7;
-                const percentX = x / imgRect.width;
-                const percentY = y / imgRect.height;
-                resultImg.style.width = (blueprintImage.naturalWidth * zoomLevel) + 'px';
-                resultImg.style.height = (blueprintImage.naturalHeight * zoomLevel) + 'px';
-                resultImg.style.left = -(percentX * blueprintImage.naturalWidth * zoomLevel - result.clientWidth/2) + 'px';
-                resultImg.style.top = -(percentY * blueprintImage.naturalHeight * zoomLevel - result.clientHeight/2) + 'px';
+            } else {
+                // Fallback: prova a caricare l'immagine blueprint standard
+                const blueprintPath = `/assets/images/${productId}/${productId}-blueprint.jpg`;
+                try {
+                    const testResponse = await fetch(blueprintPath, { method: 'HEAD' });
+                    if (testResponse.ok) {
+                        images.push(blueprintPath);
+                    }
+                } catch(e) {
+                    console.log('Blueprint image not found');
+                }
             }
             
-            blueprintImage.addEventListener('mousemove', zoom);
-            blueprintImage.addEventListener('mouseleave', () => {
-                lens.style.display = 'none';
-                result.style.display = 'none';
-            });
+            if (images.length > 0) {
+                galleryContainer.style.display = 'block';
+                setupGallery(images);
+            }
+        }
+        
+        let currentImageIndex = 0;
+        let galleryImages = [];
+        
+        function setupGallery(images) {
+            galleryImages = images;
+            currentImageIndex = 0;
             
-            blueprintImage.addEventListener('click', () => {
+            const galleryImage = document.getElementById('gallery-image');
+            const galleryPrev = document.getElementById('gallery-prev');
+            const galleryNext = document.getElementById('gallery-next');
+            const galleryDots = document.getElementById('gallery-dots');
+            const galleryContainer = document.getElementById('gallery-container');
+            
+            // Se c'è UNA SOLA immagine, nascondi frecce e pallini
+            const isSingle = galleryImages.length === 1;
+            
+            galleryPrev.style.display = isSingle ? 'none' : 'flex';
+            galleryNext.style.display = isSingle ? 'none' : 'flex';
+            galleryDots.style.display = isSingle ? 'none' : 'flex';
+            
+            // Carica prima immagine
+            galleryImage.src = galleryImages[0];
+            galleryImage.alt = `Product image 1`;
+            
+            // Crea pallini (solo se più di una immagine)
+            galleryDots.innerHTML = '';
+            if (!isSingle) {
+                for (let i = 0; i < galleryImages.length; i++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'gallery-dot' + (i === 0 ? ' active' : '');
+                    dot.addEventListener('click', () => {
+                        currentImageIndex = i;
+                        updateGalleryImage();
+                        updateDotsActive();
+                    });
+                    galleryDots.appendChild(dot);
+                }
+            }
+            
+            // Eventi navigazione (solo se più di una immagine)
+            if (!isSingle) {
+                galleryPrev.addEventListener('click', () => {
+                    currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+                    updateGalleryImage();
+                    updateDotsActive();
+                });
+                
+                galleryNext.addEventListener('click', () => {
+                    currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+                    updateGalleryImage();
+                    updateDotsActive();
+                });
+                
+                // Keyboard navigation
+                const keyHandler = (e) => {
+                    if (galleryContainer.style.display !== 'block') return;
+                    if (e.key === 'ArrowLeft') {
+                        currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+                        updateGalleryImage();
+                        updateDotsActive();
+                    } else if (e.key === 'ArrowRight') {
+                        currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+                        updateGalleryImage();
+                        updateDotsActive();
+                    }
+                };
+                document.removeEventListener('keydown', keyHandler);
+                document.addEventListener('keydown', keyHandler);
+            }
+            
+            // Lightbox al click sull'immagine (sempre attivo)
+            galleryImage.addEventListener('click', () => {
                 const lightbox = document.createElement('div');
                 lightbox.className = 'lightbox';
-                lightbox.innerHTML = `<div class="close">✕</div><div class="lightbox-content"><img class="lightbox-image" src="${blueprintSrc}"></div>`;
+                lightbox.innerHTML = `
+                    <div class="close">✕</div>
+                    <div class="lightbox-content">
+                        <img class="lightbox-image" src="${galleryImages[currentImageIndex]}">
+                    </div>
+                `;
                 document.body.appendChild(lightbox);
+                
                 const close = () => lightbox.remove();
                 lightbox.querySelector('.close').addEventListener('click', close);
                 lightbox.addEventListener('click', (e) => { if (e.target === lightbox) close(); });
                 lightbox.querySelector('.lightbox-image').addEventListener('click', close);
             });
+            
+            function updateGalleryImage() {
+                galleryImage.src = galleryImages[currentImageIndex];
+                galleryImage.alt = `Product image ${currentImageIndex + 1}`;
+            }
+            
+            function updateDotsActive() {
+                const dots = document.querySelectorAll('.gallery-dot');
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === currentImageIndex);
+                });
+            }
         }
+        
+        // -------------------------------
+        // BLUEPRINT (senza zoom)
+        // -------------------------------
+        const blueprintImage = document.getElementById('blueprint-image');
+        
+        async function loadBlueprintFromGallery() {
+            if (product.gallery && product.gallery.length > 0) {
+                const blueprintImg = product.gallery.find(item => item.src.toLowerCase().includes('blueprint'));
+                if (blueprintImg) {
+                    return blueprintImg.src;
+                }
+                return product.gallery[0].src;
+            }
+            
+            const standardPath = `/assets/images/${productId}/${productId}-blueprint.jpg`;
+            try {
+                const testResponse = await fetch(standardPath, { method: 'HEAD' });
+                if (testResponse.ok) {
+                    return standardPath;
+                }
+            } catch(e) {}
+            
+            return '';
+        }
+        
+        (async function setupBlueprint() {
+            const blueprintSrc = await loadBlueprintFromGallery();
+            
+            if (blueprintSrc) {
+                blueprintImage.src = blueprintSrc;
+                blueprintImage.alt = product.name;
+                
+                blueprintImage.addEventListener('click', () => {
+                    const lightbox = document.createElement('div');
+                    lightbox.className = 'lightbox';
+                    lightbox.innerHTML = `<div class="close">✕</div><div class="lightbox-content"><img class="lightbox-image" src="${blueprintSrc}"></div>`;
+                    document.body.appendChild(lightbox);
+                    const close = () => lightbox.remove();
+                    lightbox.querySelector('.close').addEventListener('click', close);
+                    lightbox.addEventListener('click', (e) => { if (e.target === lightbox) close(); });
+                    lightbox.querySelector('.lightbox-image').addEventListener('click', close);
+                });
+            }
+        })();
         
         // -------------------------------
         // SPECIFICHE TECNICHE
@@ -269,11 +555,79 @@
         specsDiv.appendChild(specsTable);
         
         // -------------------------------
-        // DOWNLOADS (solo Gumroad)
+        // PRINT INSTRUCTIONS (DINAMICO)
+        // -------------------------------
+        const printSection = document.getElementById('print-instructions');
+        const pi = product.printInstructions;
+        
+        if (printSection && pi && Object.keys(pi).length > 0) {
+            printSection.style.display = 'block';
+            
+            document.getElementById('print-title').textContent = `How to print ${product.name}`;
+            
+            if (pi.files && pi.files.length > 0) {
+                document.getElementById('print-files-section').style.display = 'block';
+                document.getElementById('files-list').innerHTML = pi.files.map(f => `<li><code>${f}</code></li>`).join('');
+            }
+            
+            if (pi.materials && pi.materials.length > 0) {
+                document.getElementById('print-materials-section').style.display = 'block';
+                document.getElementById('materials-body').innerHTML = pi.materials.map(m => `
+                    <tr>
+                        <td>${m.part}</td>
+                        <td>${m.material}</td>
+                        <td>${m.color}</td>
+                        <td>${m.notes}</td>
+                    </tr>
+                `).join('');
+            }
+            
+            if (pi.importantNote) {
+                document.getElementById('print-important-section').style.display = 'block';
+                document.getElementById('important-note').innerHTML = `⚠️ <strong>Important:</strong> ${pi.importantNote}`;
+            }
+            
+            if (pi.settings && pi.settings.length > 0) {
+                document.getElementById('print-settings-section').style.display = 'block';
+                document.getElementById('settings-body').innerHTML = pi.settings.map(s => `
+                    <tr>
+                        <td>${s.setting}</td>
+                        <td>${s.value}</td>
+                    </tr>
+                `).join('');
+            }
+            
+            if (pi.perPart && pi.perPart.length > 0) {
+                document.getElementById('print-perpart-section').style.display = 'block';
+                document.getElementById('perpart-body').innerHTML = pi.perPart.map(p => `
+                    <tr>
+                        <td>${p.part}</td>
+                        <td>${p.notes}</td>
+                    </tr>
+                `).join('');
+            }
+            
+            if (pi.postProcessing && pi.postProcessing.length > 0) {
+                document.getElementById('print-postprocessing-section').style.display = 'block';
+                document.getElementById('postprocessing-list').innerHTML = pi.postProcessing.map(p => `<li>${p}</li>`).join('');
+            }
+            
+            if (pi.cleaning && pi.cleaning.length > 0) {
+                document.getElementById('print-cleaning-section').style.display = 'block';
+                document.getElementById('cleaning-list').innerHTML = pi.cleaning.map(c => `<li>${c}</li>`).join('');
+            }
+            
+            if (pi.disclaimer) {
+                document.getElementById('print-disclaimer-section').style.display = 'block';
+                document.getElementById('disclaimer').innerHTML = `⚠️ <strong>Safety disclaimer:</strong> ${pi.disclaimer}`;
+            }
+        }
+        
+        // -------------------------------
+        // DOWNLOADS
         // -------------------------------
         const downloadsDiv = document.getElementById('product-downloads');
         const gumroadLink = `https://unitdesignstudio.gumroad.com/l/${productId}`;
-
         downloadsDiv.innerHTML = `
             <h3>3D model</h3>
             <a href="${gumroadLink}" target="_blank" class="btn" style="background:#FFFFFF; color:#0A0A0A;">Buy now — ${product.priceDigital}€ →</a>
@@ -317,6 +671,11 @@
                 <a href="#" class="btn">Add to cart →</a>
             `;
         }
+        
+        // -------------------------------
+        // CARICA GALLERIA
+        // -------------------------------
+        loadGalleryImages(productId);
     </script>
 </body>
 </html>

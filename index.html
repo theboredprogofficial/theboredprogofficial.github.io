@@ -241,11 +241,7 @@
         const otherProducts = productsArray.slice(0, -1);
         
         function getProductImage(product) {
-            if (product.gallery && product.gallery.length > 0) {
-                const blueprint = product.gallery.find(item => item.src.toLowerCase().includes('blueprint'));
-                return blueprint ? blueprint.src : product.gallery[0].src;
-            }
-            return '';
+            return `/assets/images/${product.id}/${product.id}-blueprint.jpg`;
         }
         
         const featuredContainer = document.getElementById('featured-product-container');
